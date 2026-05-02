@@ -1,99 +1,163 @@
 ---
-title: "WinGetを使ってアプリケーションをインストールするには"
+title: "WinGetでWindowsのアプリをインストールする"
 emoji: "🐡"
 type: "tech" # tech: 技術記事 / idea: アイデア
-topics: [windows,winget]
+topics: [windows, winget]
 published: false
 ---
 
-# WinGet (Windows Package Manager)
+# WinGetでWindows環境を整える
+
+Windowsで開発環境や作業環境を整えるとき、毎回ブラウザで配布ページを開いて、インストーラーを1つずつダウンロードしていくのは少し面倒です。
+
+そんなときに便利なのが、Windows向けのパッケージマネージャーである `WinGet` です。
+
+この記事では、自分用のメモも兼ねて、WinGetの基本的な使い方と、Git for Windows / Windows Terminal / WSL をインストールする例をまとめます。
+
+公式ドキュメント:
 
 https://learn.microsoft.com/ja-jp/windows/package-manager/winget/
 
-## WinGet をインストールするには
+## WinGetとは
 
-管理者権限でコマンドプロンプトまたはPowerShellを開きます。
+`WinGet` は Microsoft が提供する Windows Package Manager です。
 
-WinGet をインストールする
-```bash
-winget install --global --scope user winget-cli
-```
+コマンドラインからアプリを検索したり、インストールしたり、アップグレードしたりできます。
 
-## WinGet でアップグレードするには
+開発用PCの初期セットアップをするときや、あとで同じ手順をもう一度やりたいときに便利です。
 
-upgrade コマンドでアップグレード対象のパッケージを表示する
+## まずはWinGetが使えるか確認する
 
-```bash
-> winget upgrade
-名前                                               ID                                バージョン    利用可能      ソース
------------------------------------------------------------------------------------------------------------------------
-Microsoft Visual C++ 2015-2019 Redistributable (x… Microsoft.VCRedist.2015+.x64      14.29.30133.0 14.40.33816.0 winget
-Microsoft Windows Desktop Runtime - 8.0.8 (x64)    Microsoft.DotNet.DesktopRuntime.8 8.0.8         8.0.10        winget
-Microsoft Visual C++ 2015 Redistributable (x86) -… Microsoft.VCRedist.2015+.x86      14.0.24212.0  14.40.33816.0 winget
-Rye: An Experimental Package Management Solution … Rye.Rye                           0.34.0        0.41.0        winget
-Dev Home                                           Microsoft.DevHome                 0.1800.640.0  0.1801.640.0  winget
-5 アップグレードを利用できます。
-```
+最近のWindowsでは、WinGetは `App Installer` とあわせて最初から使えることが多いです。
 
-対象パッケージをアップグレードする
+まずは PowerShell またはコマンドプロンプトで、次のコマンドを実行します。
 
 ```bash
-> winget upgrade Rye.Rye --version 0.41.0
-見つかりました Rye [Rye.Rye] バージョン 0.41.0
-このアプリケーションは所有者からライセンス供与されます。
-Microsoft はサードパーティのパッケージに対して責任を負わず、ライセンスも付与しません。
-このパッケージには次の依存関係が必要です:
-  - パッケージ
-      Microsoft.VCRedist.2015+.x64
-ダウンロード中 https://github.com/astral-sh/rye/releases/download/0.41.0/rye-x86_64-windows.exe
-  ██████████████████████████████  13.4 MB / 13.4 MB
-インストーラーハッシュが正常に検証されました
-パッケージのインストールを開始しています...
-インストールが完了しました
+winget --version
 ```
 
-# Git for Windows
+バージョンが表示されれば、そのまま使えます。
 
-## Git for Windows をインストールするには
+もし `winget` コマンドが見つからない場合は、Microsoft Store から `App Installer` を更新またはインストールすると使えることがあります。
+
+## WinGetの基本操作
+
+WinGetは、まず `search` で探して、次に `install` で入れて、必要に応じて `upgrade` で更新する流れが基本です。
+
+### アプリを検索する
+
+たとえば Git を探すなら、こんな感じです。
 
 ```bash
-> winget search Git.Git
-名前 ID      バージョン ソース
--------------------------------
-Git  Git.Git 2.47.0.2   winget
-
-> winget install Git.Git --version 2.47.0.2 
+winget search Git
 ```
 
-## Git for Windows をアップデートするには
+候補が複数出ることがあるので、実際にインストールするときは `ID` を使うのが分かりやすいです。
+
+### アプリをインストールする
+
+`ID` を指定してインストールします。
 
 ```bash
-git update-git-for-windows
+winget install --id Git.Git
 ```
 
-# Windows Terminal
-
-## Windows Terminal をインストールするには
+バージョンを固定したいときは `--version` を付けます。
 
 ```bash
-> winget search Microsoft.WindowsTerminal
-名前                     ID                                バージョン  ソース
-------------------------------------------------------------------------------
-Windows Terminal         Microsoft.WindowsTerminal         1.21.2911.0 winget
-Windows Terminal Preview Microsoft.WindowsTerminal.Preview 1.22.2912.0 winget
-
-> winget install Microsoft.WindowsTerminal --version 1.21.2911.0
+winget install --id Git.Git --version 2.47.0.2
 ```
 
-# WSL
+### インストール済みアプリをアップグレードする
 
-## WSL をインストールするには
+まず、更新できるアプリ一覧を確認します。
 
 ```bash
-> winget search Microsoft.WSL
-名前                        ID            バージョン ソース
-------------------------------------------------------------
-Windows Subsystem for Linux Microsoft.WSL 2.1.5.0    winget 
-
-> winget install Microsoft.WSL --version 2.1.5.0
+winget upgrade
 ```
+
+特定のアプリだけ更新したい場合は、`ID` を指定します。
+
+```bash
+winget upgrade --id Git.Git
+```
+
+まとめて更新したい場合は次のコマンドです。
+
+```bash
+winget upgrade --all
+```
+
+## インストール例
+
+ここでは、Windows環境のセットアップでよく使いそうなツールをWinGetでインストールする例を紹介します。
+
+### Git for Windows をインストールする
+
+まずは検索します。
+
+```bash
+winget search Git.Git
+```
+
+インストールは次のコマンドです。
+
+```bash
+winget install --id Git.Git
+```
+
+### Windows Terminal をインストールする
+
+こちらもまずは検索します。
+
+```bash
+winget search Microsoft.WindowsTerminal
+```
+
+インストールは次のコマンドです。
+
+```bash
+winget install --id Microsoft.WindowsTerminal
+```
+
+### WSL をインストールする
+
+WSL も WinGet からインストールできます。
+
+```bash
+winget search Microsoft.WSL
+```
+
+```bash
+winget install --id Microsoft.WSL
+```
+
+インストール後は、環境によって再起動が必要になることがあります。
+
+## よくある注意点
+
+### `search` の結果が複数出る
+
+アプリ名だけで検索すると、似たパッケージがいくつか表示されることがあります。
+
+なので、実際のインストールでは `--id` を付けて対象を明示するのがおすすめです。
+
+### 管理者権限が必要な場合がある
+
+アプリや設定内容によっては、管理者権限の PowerShell / コマンドプロンプトが必要になることがあります。
+
+インストールに失敗したときは、まず権限まわりを確認すると切り分けしやすいです。
+
+### ライセンス確認が表示されることがある
+
+パッケージによっては、インストール時にライセンスや利用規約に関する表示が出ます。
+
+実行ログをざっと見ながら進めると安心です。
+
+## まとめ
+
+WinGetを使うと、Windowsでのアプリ導入やアップグレードをコマンドでまとめて扱えます。
+
+特に、開発環境の初期セットアップをするときや、手順をあとで見返したいときにはかなり便利です。
+
+まずは `winget --version` で使えるかを確認して、`search`、`install`、`upgrade` の3つを試してみるのがよさそうです。
