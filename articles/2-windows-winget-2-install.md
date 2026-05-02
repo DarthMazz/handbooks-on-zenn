@@ -3,7 +3,7 @@ title: "WinGetでWindowsのアプリをインストールする"
 emoji: "🐡"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [windows, winget]
-published: false
+published: true
 ---
 
 # WinGetでWindows環境を整える
