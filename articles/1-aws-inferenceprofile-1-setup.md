@@ -3,7 +3,7 @@ title: "AWS Bedrockで Application Inference Profile を作成してタグで利
 emoji: "🏷️"
 type: "tech"
 topics: ["AWS", "Bedrock", "InferenceProfile", "CloudFormation", "コスト管理"]
-published: false
+published: true
 ---
 
 # AWS Bedrock Application Inference Profile のセットアップ
