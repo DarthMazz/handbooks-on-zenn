@@ -3,7 +3,7 @@ title: "Macの初期設定で入れたものまとめ"
 emoji: "🍎"
 type: "tech"
 topics: ["mac", "homebrew", "copilot", "zed"]
-published: false
+published: true
 ---
 
 # Macの初期設定で入れたものまとめ
